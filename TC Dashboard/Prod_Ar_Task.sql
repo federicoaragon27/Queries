@@ -1,4 +1,5 @@
-SELECT task.id as task_id,
+SELECT 
+    task.id as task_id,
 
 	CASE
     	WHEN (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') THEN 1
@@ -48,35 +49,30 @@ SELECT task.id as task_id,
         ELSE 0
     END as quarterly_workload,
 
-timezone('America/Buenos_Aires',task.creation_date)::date as creation_date_custom,
-timezone('America/Buenos_Aires',task.deadline_date)::date as deadline_date_custom,
-timezone('America/Buenos_Aires',task.completion_date)::date as completion_date_custom,
-timezone('America/Buenos_Aires',current_timestamp)::date as today,
+    timezone('America/Buenos_Aires',task.creation_date)::date as creation_date_custom,
+    timezone('America/Buenos_Aires',task.deadline_date)::date as deadline_date_custom,
+    timezone('America/Buenos_Aires',task.completion_date)::date as completion_date_custom,
+    timezone('America/Buenos_Aires',current_timestamp)::date as today,
 
-task.kind as task_kind,
-auth_user.username as assignee_agent_name,
-clprofile.stage as client_stage,
-clprofile.new,
-oc.urgency,
-oc."chance_AP",
-oc."chance_TC"
+    task.kind as task_kind,
+    auth_user.username as assignee_agent_name,
+    clprofile.stage as client_stage,
+    clprofile.new,
+    oc.urgency,
+    oc."chance_AP",
+    oc."chance_TC"
 
-FROM (tasks_task task
+FROM tasks_task task
   
-  LEFT JOIN 
-  accounts_profile accprofile
-  ON task.assignee_id = accprofile.id
-  LEFT JOIN 
-  auth_user
-  ON accprofile.user_id = auth_user.id 
-  LEFT JOIN 
-  accounts_sellinglead sl
-  ON task.prop_id = sl.prop_id
-  LEFT JOIN 
-  accounts_opportunitycase oc
-  ON sl.opportunitycase_ptr_id = oc.id
-  LEFT JOIN
-  accounts_clientprofile clprofile
-  ON task.client_id = clprofile.profile_ptr_id)
+  LEFT JOIN accounts_profile accprofile
+    ON task.assignee_id = accprofile.id
+  LEFT JOIN auth_user
+    ON accprofile.user_id = auth_user.id 
+  LEFT JOIN accounts_sellinglead sl
+    ON task.prop_id = sl.prop_id
+  LEFT JOIN accounts_opportunitycase oc
+    ON sl.opportunitycase_ptr_id = oc.id
+  LEFT JOIN accounts_clientprofile clprofile
+    ON task.client_id = clprofile.profile_ptr_id
 
 GROUP BY task.id, clprofile.stage, clprofile.new, oc.urgency, assignee_agent_name, oc."chance_AP", oc."chance_TC"

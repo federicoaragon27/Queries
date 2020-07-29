@@ -1,15 +1,16 @@
-SELECT bl.opportunitycase_ptr_id as case_id,bl.prop_id,bl.chance_ac,
-
-(timezone('America/Mexico_City',oc.created_at))::date as case_creation_date,
-cp.profile_ptr_id as buyer_id,
-cp.buying_stage,
-pp.country as prop_country,
-bb.id as booking_id,
-(timezone('America/Mexico_City',bb.created_at))::date as booking_creation_date,
-(timezone('America/Mexico_City',bb.date))::date as booking_due_date,
-bb.kind,
-bb.result,
-user_ac.username as agent_name,
+SELECT 
+    bl.opportunitycase_ptr_id as case_id,
+    bl.prop_id,bl.chance_ac,
+    (timezone('America/Mexico_City',oc.created_at))::date as case_creation_date,
+    cp.profile_ptr_id as buyer_id,
+    cp.buying_stage,
+    pp.country as prop_country,
+    bb.id as booking_id,
+    (timezone('America/Mexico_City',bb.created_at))::date as booking_creation_date,
+    (timezone('America/Mexico_City',bb.date))::date as booking_due_date,
+    bb.kind,
+    bb.result,
+    user_ac.username as agent_name,
   
     CASE
         WHEN cp.buying_stage = 'unreached' THEN '1. Unreached'
@@ -33,15 +34,15 @@ user_ac.username as agent_name,
 
 FROM accounts_buyinglead bl
 
-LEFT JOIN accounts_opportunitycase oc
-ON bl.opportunitycase_ptr_id = oc.id
-LEFT JOIN accounts_clientprofile cp
-ON oc.client_id = cp.profile_ptr_id
-LEFT JOIN properties_property pp
-ON bl.prop_id = pp.id
-LEFT JOIN bookings_booking bb
-ON oc.id = bb.case_id
-LEFT JOIN accounts_profile acprofile
-ON cp.assignee_id = acprofile.id
-LEFT JOIN auth_user user_ac
-ON acprofile.user_id = user_ac.id
+    LEFT JOIN accounts_opportunitycase oc
+        ON bl.opportunitycase_ptr_id = oc.id
+    LEFT JOIN accounts_clientprofile cp
+        ON oc.client_id = cp.profile_ptr_id
+    LEFT JOIN properties_property pp
+        ON bl.prop_id = pp.id
+    LEFT JOIN bookings_booking bb
+        ON oc.id = bb.case_id
+    LEFT JOIN accounts_profile acprofile
+        ON cp.assignee_id = acprofile.id
+    LEFT JOIN auth_user user_ac
+        ON acprofile.user_id = user_ac.id

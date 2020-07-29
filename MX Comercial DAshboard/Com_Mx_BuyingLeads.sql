@@ -1,7 +1,10 @@
-SELECT cp.profile_ptr_id as buyer_id, oc.country, bl.chance_ac,
+SELECT 
+    cp.profile_ptr_id as buyer_id,
+    oc.country,
+    bl.chance_ac,
 
-MIN(timezone('America/Mexico_City',oc.created_at))::date as buyer_creation_date,
-user_ac.username as agent_name,
+    MIN(timezone('America/Mexico_City',oc.created_at))::date as buyer_creation_date,
+    user_ac.username as agent_name,
 
     CASE
         WHEN cp.buying_stage = 'unreached' THEN '1. Unreached'
@@ -17,13 +20,13 @@ user_ac.username as agent_name,
 
 FROM accounts_buyinglead bl
 
-LEFT JOIN accounts_opportunitycase oc
-ON bl.opportunitycase_ptr_id = oc.id
-LEFT JOIN accounts_clientprofile cp
-ON oc.client_id = cp.profile_ptr_id
-LEFT JOIN accounts_profile acprofile
-ON cp.assignee_id = acprofile.id
-LEFT JOIN auth_user user_ac
-ON acprofile.user_id = user_ac.id
+    LEFT JOIN accounts_opportunitycase oc
+        ON bl.opportunitycase_ptr_id = oc.id
+    LEFT JOIN accounts_clientprofile cp
+        ON oc.client_id = cp.profile_ptr_id
+    LEFT JOIN accounts_profile acprofile
+        ON cp.assignee_id = acprofile.id
+    LEFT JOIN auth_user user_ac
+        ON acprofile.user_id = user_ac.id
 
 GROUP BY cp.profile_ptr_id, agent_name, oc.country, bl.chance_ac

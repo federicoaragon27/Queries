@@ -1,4 +1,8 @@
-SELECT buyer_id, lead_date, visited_date, country,
+SELECT 
+	buyer_id,
+	lead_date,
+	visited_date,
+	country,
 
 	CASE
 		WHEN (EXTRACT(WEEK FROM lead_date) = EXTRACT(WEEK FROM visited_date)) AND (EXTRACT(YEAR FROM lead_date) = EXTRACT(YEAR FROM visited_date)) THEN 1

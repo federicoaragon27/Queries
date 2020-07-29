@@ -20,34 +20,27 @@ SELECT task.id as task_id, booking.id as booking_id, oc.id as case_id,
         ELSE NULL
     END as lead_booked,
 
-auth_user.username as assignee_agent_name,
-booking_user.username as booking_agent_name,
-oc.urgency
+    uth_user.username as assignee_agent_name,
+    booking_user.username as booking_agent_name,
+    oc.urgency
 
 FROM tasks_task task
   
-  LEFT JOIN
-  bookings_booking booking
-  ON task.prop_id = booking.prop_id
-  LEFT JOIN 
-  accounts_sellinglead sl
-  ON task.prop_id = sl.prop_id
-  LEFT JOIN 
-  accounts_opportunitycase oc
-  ON sl.opportunitycase_ptr_id = oc.id
-  LEFT JOIN 
-  accounts_profile accprofile
-  ON task.assignee_id = accprofile.id
-  LEFT JOIN 
-  auth_user
-  ON accprofile.user_id = auth_user.id
-  LEFT JOIN 
-  accounts_profile bookprofile
-  ON booking.booked_by_id = bookprofile.id
-  LEFT JOIN 
-  auth_user booking_user
-  ON bookprofile.user_id = booking_user.id
+  LEFT JOIN bookings_booking booking
+    ON task.prop_id = booking.prop_id
+  LEFT JOIN accounts_sellinglead sl
+    ON task.prop_id = sl.prop_id
+  LEFT JOIN accounts_opportunitycase oc
+    ON sl.opportunitycase_ptr_id = oc.id
+  LEFT JOIN accounts_profile accprofile
+    ON task.assignee_id = accprofile.id
+  LEFT JOIN auth_user
+    ON accprofile.user_id = auth_user.id
+  LEFT JOIN accounts_profile bookprofile
+    ON booking.booked_by_id = bookprofile.id
+  LEFT JOIN auth_user booking_user
+    ON bookprofile.user_id = booking_user.id
 
 WHERE
-(auth_user.username = 'martina' OR auth_user.username = 'estefania' OR auth_user.username = 'flavia') AND
-(task.kind = 'first_contact' OR task.kind = 'retry_first_contact' OR task.kind = 'follow_up' OR task.kind = 'book_visit')
+    (auth_user.username = 'martina' OR auth_user.username = 'estefania' OR auth_user.username = 'flavia') AND
+    (task.kind = 'first_contact' OR task.kind = 'retry_first_contact' OR task.kind = 'follow_up' OR task.kind = 'book_visit')
