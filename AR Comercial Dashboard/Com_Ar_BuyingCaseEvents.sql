@@ -1,4 +1,5 @@
 SELECT 
+<<<<<<< HEAD
    ee.id event_id,
    oc.id as case_id,
    bce.kind as buying_case_kind, 
@@ -6,16 +7,31 @@ SELECT
    usa.id,
    usa.first_name,
    
+=======
+   ee.id event_id,oc.id as case_id, 
+   bce.kind as buying_case_kind, 
+   ee.created_at::date as event_creation_date, 
+   usa.id, 
+   usa.first_name,
+
+>>>>>>> master
    CASE
       WHEN bce.kind = 'reserved' THEN oc.id
       ELSE NULL
    END as reserved_id,
+<<<<<<< HEAD
 
+=======
+   
+>>>>>>> master
    CASE
       WHEN bce.kind = 'signed' THEN oc.id
       ELSE NULL
    END as sold_id,
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
    oc.country
 
 FROM events_buyingcaseevent bce

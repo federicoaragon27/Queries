@@ -64,6 +64,7 @@ SELECT
 
 FROM tasks_task task
   
+<<<<<<< HEAD
   LEFT JOIN accounts_profile accprofile
     ON task.assignee_id = accprofile.id
   LEFT JOIN auth_user
@@ -74,5 +75,17 @@ FROM tasks_task task
     ON sl.opportunitycase_ptr_id = oc.id
   LEFT JOIN accounts_clientprofile clprofile
     ON task.client_id = clprofile.profile_ptr_id
+=======
+    LEFT JOIN accounts_profile accprofile
+        ON task.assignee_id = accprofile.id
+    LEFT JOIN auth_user
+        ON accprofile.user_id = auth_user.id 
+    LEFT JOIN accounts_sellinglead sl
+        ON task.prop_id = sl.prop_id
+    LEFT JOIN accounts_opportunitycase oc
+        ON sl.opportunitycase_ptr_id = oc.id
+    LEFT JOIN accounts_clientprofile clprofile
+        ON task.client_id = clprofile.profile_ptr_id
+>>>>>>> master
 
 GROUP BY task.id, clprofile.stage, clprofile.new, oc.urgency, assignee_agent_name, oc."chance_AP", oc."chance_TC"

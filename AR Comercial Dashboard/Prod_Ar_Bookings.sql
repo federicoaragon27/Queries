@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 SELECT
+=======
+SELECT 
+>>>>>>> master
   bb.id as booking_id,
   bb.result,
   bb.kind,
@@ -21,6 +25,7 @@ SELECT
 
   CASE
 	  WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') THEN 1
+<<<<<<< HEAD
 		ELSE 0
   END as initial_stock,
 
@@ -35,6 +40,22 @@ SELECT
   END as due_today,
 
   CASE
+=======
+	  ELSE 0
+  END as initial_stock,
+
+  CASE
+	  WHEN (timezone('America/Buenos_Aires',bb.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
+	  ELSE 0
+  END as booked_today,
+
+  CASE
+	  WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
+	  ELSE 0
+  END as due_today,
+
+  CASE
+>>>>>>> master
 		WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
 		ELSE 0
   END as final_stock,
@@ -66,8 +87,13 @@ SELECT
   END as stock_last_week,
 
 	CASE
+<<<<<<< HEAD
     	WHEN (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '7 days' + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
       ELSE 0
+=======
+    WHEN (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '7 days' + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
+    ELSE 0
+>>>>>>> master
   END as stock_next_week
 
 FROM bookings_booking bb

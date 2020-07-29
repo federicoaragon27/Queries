@@ -39,6 +39,10 @@ FROM (SELECT
     		WHEN ((tt.kind = 'first_contact') OR (tt.kind = 'retry_first_contact') OR (tt.kind = 'follow_up') OR (tt.kind = 'book_visit')) THEN timezone('America/Buenos_Aires',tt.completion_date)
         	ELSE NULL
     	END) as last_contact_date
+		MAX(CASE
+    			WHEN ((tt.kind = 'first_contact') OR (tt.kind = 'retry_first_contact') OR (tt.kind = 'follow_up') OR (tt.kind = 'book_visit')) THEN timezone('America/Buenos_Aires',tt.completion_date)
+        		ELSE NULL
+    		END) as last_contact_date
 
 	FROM accounts_sellinglead sl
 

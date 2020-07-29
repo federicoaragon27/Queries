@@ -43,9 +43,14 @@ FROM(
 	SELECT 
 		oc.client_id as buyer_id,
 		oc.country,
+<<<<<<< HEAD
 		min(timezone('America/Buenos_Aires',oc.created_at))::date as lead_date,
   
   		min(CASE
+=======
+		MIN(timezone('America/Buenos_Aires',oc.created_at))::date as lead_date,
+  		MIN(CASE
+>>>>>>> master
     			WHEN bb.kind = 'visit' AND bb.result = 'successful' THEN timezone('America/Buenos_Aires',bb.date)::date
         		ELSE NULL
     		END) as visited_date
