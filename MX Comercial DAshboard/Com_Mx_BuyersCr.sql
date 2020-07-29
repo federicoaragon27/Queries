@@ -1,4 +1,8 @@
-SELECT buyer_id, lead_date, visited_date, country,
+SELECT 
+	buyer_id,
+	lead_date,
+	visited_date,
+	country,
 
 	CASE
 		WHEN (EXTRACT(WEEK FROM lead_date) = EXTRACT(WEEK FROM visited_date)) AND (EXTRACT(YEAR FROM lead_date) = EXTRACT(YEAR FROM visited_date)) THEN 1
@@ -35,39 +39,29 @@ SELECT buyer_id, lead_date, visited_date, country,
 		ELSE 0
 	END as cr_to_visited_s6
 
-FROM(
-	SELECT oc.client_id as buyer_id, oc.country,
+FROM(SELECT oc.client_id as buyer_id, oc.country,
 
-  		min(CASE
+  		MIN(CASE
     		WHEN ec.kind = 'unreached' THEN timezone('America/Mexico_City',ee.created_at)::date
         	ELSE NULL
         END) as lead_date,
   
-  		min(CASE
+  		MIN(CASE
     		WHEN bb.kind = 'visit' AND bb.result = 'successful' THEN timezone('America/Mexico_City',bb.date)::date
         	ELSE NULL
     	END) as visited_date
   
 	FROM accounts_buyinglead bl
 
-                LEFT JOIN 
-		accounts_opportunitycase oc
-		ON bl.opportunitycase_ptr_id = oc.id
-
-                LEFT JOIN 
-		accounts_clientprofile cp
-		ON oc.client_id = cp.profile_ptr_id
-
-		LEFT JOIN 
-		events_event ee
-		ON oc.id = ee.opportunity_case_id
-
-		LEFT JOIN 
-		events_buyingcaseevent ec
-		ON ee.id = ec.event_ptr_id
-
-		LEFT JOIN 
-		bookings_booking bb
-		ON oc.id = bb.case_id
+        LEFT JOIN accounts_opportunitycase oc
+			ON bl.opportunitycase_ptr_id = oc.id
+		LEFT JOIN accounts_clientprofile cp
+			ON oc.client_id = cp.profile_ptr_id
+		LEFT JOIN events_event ee
+			ON oc.id = ee.opportunity_case_id
+		LEFT JOIN events_buyingcaseevent ec
+			ON ee.id = ec.event_ptr_id
+		LEFT JOIN bookings_booking bb
+			ON oc.id = bb.case_id
 
 	GROUP BY oc.client_id, oc.country) as funnel_stage_table
