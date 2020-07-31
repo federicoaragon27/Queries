@@ -20,22 +20,33 @@ SELECT
   user_ap.username as ap_asignee_name,
 
   CASE
-	  WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') THEN 1
+	  WHEN 
+      (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+      (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours')
+      THEN 1
 		ELSE 0
   END as initial_stock,
 
   CASE
-		WHEN (timezone('America/Buenos_Aires',bb.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
+		WHEN 
+      (timezone('America/Buenos_Aires',bb.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+      (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+      THEN 1
 		ELSE 0
   END as booked_today,
 
   CASE
-		WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
+	    WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+      (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+      THEN 1
 		ELSE 0
   END as due_today,
 
   CASE
-		WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
+		WHEN 
+      (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
+      (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+      THEN 1
 		ELSE 0
   END as final_stock,
     
@@ -61,12 +72,18 @@ SELECT
   END as booking_result_type,
     
   CASE
-    WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '8 days' + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') THEN 1
+    WHEN
+      (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '8 days' + INTERVAL '19 hours') AND
+      (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours')
+      THEN 1
     ELSE 0
   END as stock_last_week,
 
 	CASE
-    WHEN (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '7 days' + INTERVAL '19 hours') AND (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN 1
+    WHEN 
+      (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '7 days' + INTERVAL '19 hours') AND
+      (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+      THEN 1
     ELSE 0
   END as stock_next_week
 

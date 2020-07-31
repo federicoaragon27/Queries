@@ -5,12 +5,18 @@ SELECT
 	lead_table.last_contact_date,
 
     CASE
-    	WHEN (lead_table.last_booking_date > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND (lead_table.last_booking_date <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN lead_table.case_id
+    	WHEN
+			(lead_table.last_booking_date > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+			(lead_table.last_booking_date <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') 
+			THEN lead_table.case_id
         ELSE NULL
     END as booked_today,
 
 	CASE
-    	WHEN (lead_table.last_contact_date > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND (lead_table.last_contact_date <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN lead_table.case_id
+    	WHEN
+			(lead_table.last_contact_date > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+			(lead_table.last_contact_date <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') 
+			THEN lead_table.case_id
         ELSE NULL
     END as contacted_today,
 
@@ -38,11 +44,7 @@ FROM (SELECT
 		MAX(	CASE
     		WHEN ((tt.kind = 'first_contact') OR (tt.kind = 'retry_first_contact') OR (tt.kind = 'follow_up') OR (tt.kind = 'book_visit')) THEN timezone('America/Buenos_Aires',tt.completion_date)
         	ELSE NULL
-    	END) as last_contact_date
-		MAX(CASE
-    			WHEN ((tt.kind = 'first_contact') OR (tt.kind = 'retry_first_contact') OR (tt.kind = 'follow_up') OR (tt.kind = 'book_visit')) THEN timezone('America/Buenos_Aires',tt.completion_date)
-        		ELSE NULL
-    		END) as last_contact_date
+    	END) as last_contact_date,
 
 	FROM accounts_sellinglead sl
 
@@ -59,3 +61,5 @@ FROM (SELECT
 		ON lead_table.contacted_by_id = profile_tc.id
 	LEFT JOIN auth_user user_tc
 		ON profile_tc.user_id = user_tc.id
+
+WHERE (user_tc.username = 'estefania' OR user_tc.username = 'martina' OR user_tc.username = 'flavia')

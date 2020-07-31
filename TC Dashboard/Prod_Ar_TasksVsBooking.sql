@@ -4,22 +4,36 @@ SELECT
     oc.id as case_id,
 
    CASE
-    	WHEN (timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND (timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN task.id
+    	WHEN 
+            (timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+            (timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+            THEN task.id
         ELSE NULL
     END as contacted,
 
     CASE
-    	WHEN (timezone('America/Buenos_Aires',booking.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND (timezone('America/Buenos_Aires',booking.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND (booking.kind = 'appraisal') AND (auth_user.username = booking_user.username) THEN booking.id
+    	WHEN 
+            (timezone('America/Buenos_Aires',booking.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+            (timezone('America/Buenos_Aires',booking.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
+            (booking.kind = 'appraisal') AND (auth_user.username = booking_user.username) 
+            THEN booking.id
         ELSE NULL
     END as booked,
 
    CASE
-    	WHEN (timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND (timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') THEN oc.id
+    	WHEN 
+            (timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+            (timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+            THEN oc.id
         ELSE NULL
     END as lead_contacted,
 
     CASE
-    	WHEN (timezone('America/Buenos_Aires',booking.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND (timezone('America/Buenos_Aires',booking.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND (booking.kind = 'appraisal') AND (auth_user.username = booking_user.username) THEN oc.id
+    	WHEN
+            (timezone('America/Buenos_Aires',booking.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+            (timezone('America/Buenos_Aires',booking.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
+            (booking.kind = 'appraisal') AND (auth_user.username = booking_user.username) AND (booking.result IS NULL OR booking.result = 'successful')
+            THEN oc.id
         ELSE NULL
     END as lead_booked,
 

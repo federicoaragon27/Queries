@@ -1,11 +1,7 @@
 SELECT 
     bl.opportunitycase_ptr_id as case_id,
-<<<<<<< HEAD
-    bl.prop_id,bl.chance_ac,
-=======
     bl.prop_id,
     bl.chance_ac,
->>>>>>> master
     (timezone('America/Mexico_City',oc.created_at))::date as case_creation_date,
     cp.profile_ptr_id as buyer_id,
     cp.buying_stage,

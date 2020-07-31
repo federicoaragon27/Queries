@@ -14,4 +14,5 @@ FROM properties_property pp
     LEFT JOIN events_propertyevent pe
         ON ee.id = pe.event_ptr_id
   
-GROUP BY pp.id
+GROUP BY 
+    pp.id

@@ -5,37 +5,70 @@ SELECT
 	country,
 
 	CASE
-		WHEN (EXTRACT(WEEK FROM lead_date) = EXTRACT(WEEK FROM visited_date)) AND (EXTRACT(YEAR FROM lead_date) = EXTRACT(YEAR FROM visited_date)) THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM lead_date) = EXTRACT(WEEK FROM visited_date)) AND
+			(EXTRACT(YEAR FROM lead_date) = EXTRACT(YEAR FROM visited_date)) 
+			THEN 1
 		ELSE 0
 	END as cr_to_visited_s1,
 
 	CASE
-		WHEN (EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 1) AND (EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) THEN 1
-		WHEN (EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 1 AND (EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 1) AND 
+			(EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date))
+			THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 1 AND 
+			(EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) 
+			THEN 1
 		ELSE 0
 	END as cr_to_visited_s2,
 
 	CASE
-		WHEN (EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 2) AND (EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) THEN 1
-		WHEN (EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 2 AND (EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 2) AND 
+			(EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) 
+			THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 2 AND 
+			(EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) 
+			THEN 1
 		ELSE 0
 	END as cr_to_visited_s3,
 
 	CASE
-		WHEN (EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 3) AND (EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) THEN 1
-		WHEN (EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 3 AND (EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 3) AND 
+			(EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) 
+			THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 3 AND 
+			(EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1)
+			THEN 1
 		ELSE 0
 	END as cr_to_visited_s4,
 
 	CASE
-		WHEN (EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 4) AND (EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) THEN 1
-		WHEN (EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 4 AND (EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 4) AND 
+			(EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) 
+			THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 4 AND 
+			(EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) 
+			THEN 1
 		ELSE 0
 	END as cr_to_visited_s5,
 
 	CASE
-		WHEN (EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 5) AND (EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) THEN 1
-		WHEN (EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 5 AND (EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) - EXTRACT(WEEK FROM lead_date) <= 5) AND 
+			(EXTRACT(YEAR FROM visited_date) = EXTRACT(YEAR FROM lead_date)) 
+			THEN 1
+		WHEN 
+			(EXTRACT(WEEK FROM visited_date) + 52) - EXTRACT(WEEK FROM lead_date) <= 5 AND 
+			(EXTRACT(YEAR FROM visited_date) - EXTRACT(YEAR FROM lead_date) = 1) 
+			THEN 1
 		ELSE 0
 	END as cr_to_visited_s6
 
