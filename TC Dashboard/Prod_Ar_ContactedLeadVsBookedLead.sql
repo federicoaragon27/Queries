@@ -1,20 +1,21 @@
 SELECT
     
     custom_pivot.selling_case_id,
+    tc_user_book.username as task_responsable,
     tc_user_task_responsable.username as booker,
-    custom_pivot.property_id as prop_id,
-    custom_pivot.first_booking_date,
+    timezone('America/Buenos_Aires', bb_sec.created_at) as booking_date,
+    timezone('America/Buenos_Aires', custom_pivot.first_booking_date) as first_booking_date,
 
     CASE
         WHEN 
             (
-                (timezone('America/Buenos_Aires', tt.completion_date) >= timezone('America/Buenos_Aires', current_timestamp::date) - INTERVAL '5 hours') AND
-                (timezone('America/Buenos_Aires', tt.completion_date) < timezone('America/Buenos_Aires', current_timestamp::date) + INTERVAL '19 hours')
+                (timezone('America/Buenos_Aires', tt.completion_date) >= timezone('America/Buenos_Aires', current_timestamp)::date - INTERVAL '5 hours') AND
+                (timezone('America/Buenos_Aires', tt.completion_date) < timezone('America/Buenos_Aires', current_timestamp)::date + INTERVAL '19 hours')
             ) AND 
             (
                 (
-                    (timezone('America/Buenos_Aires', custom_pivot.first_booking_date) >= timezone('America/Buenos_Aires', current_timestamp::date) - INTERVAL '5 hours') AND
-                    (timezone('America/Buenos_Aires', custom_pivot.first_booking_date) < timezone('America/Buenos_Aires', current_timestamp::date) + INTERVAL '19 hours')
+                    (timezone('America/Buenos_Aires', custom_pivot.first_booking_date) >= timezone('America/Buenos_Aires', current_timestamp)::date - INTERVAL '5 hours') AND
+                    (timezone('America/Buenos_Aires', custom_pivot.first_booking_date) < timezone('America/Buenos_Aires', current_timestamp)::date + INTERVAL '19 hours')
                 ) OR
                 (custom_pivot.first_booking_date IS NULL)
             )
@@ -25,8 +26,8 @@ SELECT
     CASE
         WHEN 
         (
-            (timezone('America/Buenos_Aires', bb_sec.created_at) >= timezone('America/Buenos_Aires', current_timestamp::date) - INTERVAL '5 hours') AND
-            (timezone('America/Buenos_Aires', bb_sec.created_at) < timezone('America/Buenos_Aires', current_timestamp::date) + INTERVAL '19 hours') 
+            (timezone('America/Buenos_Aires', bb_sec.created_at) >= timezone('America/Buenos_Aires', current_timestamp)::date - INTERVAL '5 hours') AND
+            (timezone('America/Buenos_Aires', bb_sec.created_at) < timezone('America/Buenos_Aires', current_timestamp)::date + INTERVAL '19 hours') 
         ) AND
             timezone('America/Buenos_Aires',custom_pivot.first_booking_date)::date = timezone('America/Buenos_Aires', current_timestamp)::date
           AND 

@@ -1,59 +1,84 @@
 SELECT 
     task.id as task_id,
 
-	CASE
-    	WHEN 
-            (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours')
+	CASE /*Rezagadas*/
+    	WHEN /*El deadline fue ayer o antes y no se completo o se completo hoy*/
+            (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+            timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
+            (
+                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            )
             THEN 1
-        WHEN 
+        WHEN /*No tiene deadline y se creo ayer o antes y no se completo o se completo hoy*/
             (timezone('America/Buenos_Aires',task.deadline_date) IS NULL) AND
-            (timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours')
+            (timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
+            timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
+            (
+                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            )
             THEN 1
         ELSE 0
     END as stock_beginning,
 
 	CASE
-    	WHEN
-            (timezone('America/Buenos_Aires',task.deadline_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') 
+    	WHEN /*Cuando la tarea tiene fecha de vencimiento en el dia de hoy y se completo hoy o no se completo*/
+            (
+                (timezone('America/Buenos_Aires',task.deadline_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
+                (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') 
+            ) AND
+            timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
+            (
+                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            )
             THEN 1
-        WHEN
+        WHEN /*Cuando la tarea no tiene fecha de vencimiento y se creo hoy*/
             (timezone('America/Buenos_Aires',task.deadline_date) IS NULL) AND
-            (timezone('America/Buenos_Aires',task.creation_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') 
+            (
+                timezone('America/Buenos_Aires',task.creation_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            ) 
             THEN 1
-    	WHEN
-            (timezone('America/Buenos_Aires',task.deadline_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours')
+    	WHEN /*Cuando la tarea tiene fecha de vencimiento en el dia de hoy y se completo ayer o antes (No contar)*/
+            (
+                timezone('America/Buenos_Aires',task.deadline_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            ) AND
+            timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours'
             THEN 0
-    	WHEN 
+    	WHEN /*Cuando la tarea tiene fecha de vencimiento posterior a hoy y se completo hoy*/
             (timezone('America/Buenos_Aires',task.deadline_date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+            (
+                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            )
             THEN 1
         ELSE 0
     END as born,
 
 	CASE
-    	WHEN 
-            (timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
-            (timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+    	WHEN /*la tarea se completo hoy*/
+            (
+                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            )
             THEN 1
         ELSE 0
     END as contacted,
 
 	CASE
-    	WHEN
-            (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
+    	WHEN /*La tarea tiene deadline hoy o antes y no se completo o se completo hoy despues de las 19*/    
+            timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours' AND          
             (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
             THEN 1
-        WHEN
+        WHEN /*La tarea no tiene deadline y fue creada hoy y no se completo o se completo despues de las 19*/
             (timezone('America/Buenos_Aires',task.deadline_date) IS NULL) AND
-            (timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
+            (
+                timezone('America/Buenos_Aires',task.creation_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            ) AND
             (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
             THEN 1
         ELSE 0

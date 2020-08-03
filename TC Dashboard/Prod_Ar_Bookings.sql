@@ -20,7 +20,7 @@ SELECT
   user_ap.username as ap_asignee_name,
 
   CASE
-	  WHEN 
+	  WHEN /*Agendado para hoy o mas adelante Y creado antes que hoy*/
       (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
       (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours')
       THEN 1
@@ -28,22 +28,27 @@ SELECT
   END as initial_stock,
 
   CASE
-		WHEN 
-      (timezone('America/Buenos_Aires',bb.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
-      (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+		WHEN /*La creacion del booking es hoy*/
+      (
+        timezone('America/Buenos_Aires',bb.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+        timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+      )
       THEN 1
 		ELSE 0
   END as booked_today,
 
   CASE
-	    WHEN (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
-      (timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+	    WHEN /*El booking fue creado para que se realice hoy*/
+      (
+        timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+        timezone('America/Buenos_Aires',bb.date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+      )
       THEN 1
 		ELSE 0
   END as due_today,
 
   CASE
-		WHEN 
+		WHEN /*Agendado para manana o mas adelante Y creado hoy o antes*/ 
       (timezone('America/Buenos_Aires',bb.date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') AND
       (timezone('America/Buenos_Aires',bb.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
       THEN 1
