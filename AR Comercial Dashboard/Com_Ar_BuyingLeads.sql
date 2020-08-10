@@ -13,7 +13,8 @@ SELECT
         WHEN cp.buying_stage = 'visited' THEN '4. Visited'
         WHEN cp.buying_stage = 'reserved' THEN '5. Reserved'
         WHEN cp.buying_stage = 'reserve_accepted' THEN '6. Reserve Accepted'
-        WHEN cp.buying_stage = 'sold' THEN '7. Sold'
+        WHEN cp.buying_stage = 'signed' THEN '7. Signed'
+        WHEN cp.buying_stage = 'sold' THEN '8. Sold'
         WHEN cp.buying_stage = 'closed' THEN '0. Closed'
         ELSE NULL
     END as buying_stages

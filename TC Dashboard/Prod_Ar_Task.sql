@@ -1,5 +1,6 @@
 SELECT 
     task.id as task_id,
+    clprofile.profile_ptr_id as client_id,
 
 	CASE /*Rezagadas*/
     	WHEN /*El deadline fue ayer o antes y no se completo o se completo hoy*/
@@ -76,7 +77,6 @@ SELECT
         WHEN /*La tarea no tiene deadline y fue creada hoy y no se completo o se completo despues de las 19*/
             (timezone('America/Buenos_Aires',task.deadline_date) IS NULL) AND
             (
-                timezone('America/Buenos_Aires',task.creation_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
                 timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
             ) AND
             (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
@@ -132,6 +132,8 @@ FROM tasks_task task
         ON sl.opportunitycase_ptr_id = oc.id
     LEFT JOIN accounts_clientprofile clprofile
         ON task.client_id = clprofile.profile_ptr_id
+
+WHERE oc.country = 'AR'
 
 GROUP BY
     task.id,

@@ -1,5 +1,6 @@
 SELECT 
-    sl.opportunitycase_ptr_id as case_id,sl.prop_id,
+    sl.opportunitycase_ptr_id as case_id,
+    sl.prop_id,
     oc."chance_AP" as chance_ap_custom,
     (timezone('America/Buenos_Aires',oc.created_at))::date as case_creation_date,
     cp.profile_ptr_id as seller_id,
@@ -10,7 +11,7 @@ SELECT
     (timezone('America/Buenos_Aires',bb.date))::date as booking_due_date,
     bb.kind,
     bb.result,
-    user_ac.username as agent_name,
+    user_ap.username as agent_name,
   
     CASE
         WHEN sl.stage = 'unreached' THEN '1. Unreached'
@@ -47,5 +48,5 @@ FROM accounts_sellinglead sl
         ON oc.id = bb.case_id
     LEFT JOIN accounts_profile acprofile
         ON cp.assignee_id = acprofile.id
-    LEFT JOIN auth_user user_ac
-        ON acprofile.user_id = user_ac.id
+    LEFT JOIN auth_user user_ap
+        ON acprofile.user_id = user_ap.id

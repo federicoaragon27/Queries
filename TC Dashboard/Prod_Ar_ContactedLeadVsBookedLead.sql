@@ -3,6 +3,7 @@ SELECT
     custom_pivot.selling_case_id,
     tc_user_book.username as task_responsable,
     tc_user_task_responsable.username as booker,
+    oc_sec.urgency as intention,
     timezone('America/Buenos_Aires', bb_sec.created_at) as booking_date,
     timezone('America/Buenos_Aires', custom_pivot.first_booking_date) as first_booking_date,
 
@@ -42,7 +43,7 @@ FROM tasks_task tt
     
     LEFT JOIN (SELECT
                     oc.id AS selling_case_id,
-                    sl.prop_id AS property_id,  
+                    sl.prop_id AS property_id,
                     MIN(bb.created_at) AS first_booking_date,
                     MIN(bb.id) as booking_id
 
@@ -74,7 +75,9 @@ FROM tasks_task tt
         ON prof_task_responsable.id = tt.completed_by_id
     LEFT JOIN auth_user tc_user_task_responsable
         ON tc_user_task_responsable.id = prof_task_responsable.user_id
-
+    LEFT JOIN accounts_opportunitycase oc_sec
+        ON oc_sec.id = custom_pivot.selling_case_id
+                
 WHERE
     (tc_user_task_responsable.username = 'estefania' OR tc_user_task_responsable.username = 'flavia' OR tc_user_task_responsable.username = 'martina' OR tc_user_task_responsable.username IS NULL) AND
     (tt.kind = 'first_contact' OR tt.kind = 'retry_first_contact' OR tt.kind = 'follow_up' OR tt.kind = 'book_visit')

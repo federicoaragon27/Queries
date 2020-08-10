@@ -72,7 +72,9 @@ SELECT
 		ELSE 0
 	END as cr_to_visited_s6
 
-FROM(SELECT oc.client_id as buyer_id, oc.country,
+FROM(SELECT 
+		oc.client_id as buyer_id, 
+		oc.country,
 
   		MIN(CASE
     		WHEN ec.kind = 'unreached' THEN timezone('America/Mexico_City',ee.created_at)::date

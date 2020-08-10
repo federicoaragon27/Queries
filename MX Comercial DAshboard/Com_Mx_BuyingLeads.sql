@@ -1,7 +1,6 @@
 SELECT 
     cp.profile_ptr_id as buyer_id,
     oc.country,
-    bl.chance_ac,
 
     MIN(timezone('America/Mexico_City',oc.created_at))::date as buyer_creation_date,
     user_ac.username as agent_name,
@@ -13,8 +12,10 @@ SELECT
         WHEN cp.buying_stage = 'visited' THEN '4. Visited'
         WHEN cp.buying_stage = 'reserved' THEN '5. Reserved'
         WHEN cp.buying_stage = 'reserve_accepted' THEN '6. Reserve Accepted'
-        WHEN cp.buying_stage = 'sold' THEN '7. Sold'
+        WHEN cp.buying_stage = 'signed' THEN '7. Signed'
+        WHEN cp.buying_stage = 'sold' THEN '8. Sold'
         WHEN cp.buying_stage = 'closed' THEN '0. Closed'
+        
         ELSE NULL
     END as buying_stages
 
@@ -29,4 +30,4 @@ FROM accounts_buyinglead bl
     LEFT JOIN auth_user user_ac
         ON acprofile.user_id = user_ac.id
 
-GROUP BY cp.profile_ptr_id, agent_name, oc.country, bl.chance_ac
+GROUP BY cp.profile_ptr_id, user_ac.username, oc.country, bl.stage

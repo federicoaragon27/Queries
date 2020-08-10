@@ -95,15 +95,15 @@ SELECT
 FROM bookings_booking bb
 
   LEFT JOIN accounts_opportunitycase oc
-    ON bb.case_id = oc.id
+    ON oc.id = bb.case_id
   LEFT JOIN properties_property pp
-    ON bb.prop_id = pp.id
+    ON pp.id = bb.prop_id 
   LEFT JOIN accounts_profile profile_tc
-    ON bb.booked_by_id = profile_tc.id
+    ON profile_tc.id = bb.booked_by_id
   LEFT JOIN auth_user user_tc
-    ON profile_tc.user_id = user_tc.id 
+    ON user_tc.id = profile_tc.user_id
   LEFT JOIN accounts_profile profile_ap
-    ON bb.performed_by_id = profile_ap.id
+    ON profile_ap.id = bb.performed_by_id
   LEFT JOIN auth_user user_ap
-    ON profile_ap.user_id = user_ap.id 
+    ON user_ap.id = profile_ap.user_id 
   

@@ -84,4 +84,6 @@ FROM bookings_booking bb
     ON bb.performed_by_id = profile_ap.id
   LEFT JOIN auth_user user_ap
     ON profile_ap.user_id = user_ap.id 
+
+WHERE bb.kind = 'visit'
   

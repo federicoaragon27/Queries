@@ -14,7 +14,7 @@ SELECT
     END as contacted,
 
     CASE
-    	WHEN /*Se creo un agendamiento hoy de tipo apraisal y lo creo una TC*/
+    	WHEN /*Se creo un agendamiento hoy de tipo appraisal y lo creo una TC*/
             (
                 timezone('America/Buenos_Aires',booking.created_at) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
                 timezone('America/Buenos_Aires',booking.created_at) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours' 
