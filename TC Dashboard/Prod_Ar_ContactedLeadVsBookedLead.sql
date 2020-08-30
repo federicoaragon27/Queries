@@ -55,8 +55,7 @@ FROM tasks_task tt
                         ON bb.case_id = oc.id
     
                 WHERE
-                    bb.kind = 'appraisal' OR
-                    bb.kind IS NULL
+                    bb.kind = 'appraisal'
 
                 GROUP BY 
                 oc.id,
@@ -79,6 +78,6 @@ FROM tasks_task tt
         ON oc_sec.id = custom_pivot.selling_case_id
                 
 WHERE
-    (tc_user_task_responsable.username = 'estefania' OR tc_user_task_responsable.username = 'flavia' OR tc_user_task_responsable.username = 'martina' OR tc_user_task_responsable.username IS NULL) AND
+    (tc_user_task_responsable.username = 'estefania' OR tc_user_task_responsable.username = 'martina' OR tc_user_task_responsable.username IS NULL) AND
     (tt.kind = 'first_contact' OR tt.kind = 'retry_first_contact' OR tt.kind = 'follow_up' OR tt.kind = 'book_visit')
     

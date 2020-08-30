@@ -5,19 +5,23 @@ SELECT
 	CASE /*Rezagadas*/
     	WHEN /*El deadline fue ayer o antes y no se completo o se completo hoy*/
             (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
-            timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
             (
-                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
-                timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+                timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
+                (
+                    timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                    timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+                )
             )
             THEN 1
         WHEN /*No tiene deadline y se creo ayer o antes y no se completo o se completo hoy*/
             (timezone('America/Buenos_Aires',task.deadline_date) IS NULL) AND
             (timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours') AND
-            timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
             (
-                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
-                timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+                timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
+                (
+                    timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                    timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+                )
             )
             THEN 1
         ELSE 0
@@ -29,10 +33,12 @@ SELECT
                 (timezone('America/Buenos_Aires',task.deadline_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '1 day' + INTERVAL '19 hours') AND
                 (timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours') 
             ) AND
-            timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
             (
-                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
-                timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+                timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
+                (
+                    timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date - INTERVAL '5 hours' AND
+                    timezone('America/Buenos_Aires',task.completion_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+                )
             )
             THEN 1
         WHEN /*Cuando la tarea no tiene fecha de vencimiento y se creo hoy*/
@@ -72,14 +78,20 @@ SELECT
 	CASE
     	WHEN /*La tarea tiene deadline hoy o antes y no se completo o se completo hoy despues de las 19*/    
             timezone('America/Buenos_Aires',task.deadline_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours' AND          
-            (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+            (
+                timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
+                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            )
             THEN 1
         WHEN /*La tarea no tiene deadline y fue creada hoy y no se completo o se completo despues de las 19*/
             (timezone('America/Buenos_Aires',task.deadline_date) IS NULL) AND
             (
                 timezone('America/Buenos_Aires',task.creation_date) <= timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
             ) AND
-            (timezone('America/Buenos_Aires',task.completion_date) IS NULL OR timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours')
+            (
+                timezone('America/Buenos_Aires',task.completion_date) IS NULL OR 
+                timezone('America/Buenos_Aires',task.completion_date) > timezone('America/Buenos_Aires',current_timestamp)::date + INTERVAL '19 hours'
+            )
             THEN 1
         ELSE 0
     END as stock_ending,
@@ -133,7 +145,8 @@ FROM tasks_task task
     LEFT JOIN accounts_clientprofile clprofile
         ON task.client_id = clprofile.profile_ptr_id
 
-WHERE oc.country = 'AR'
+WHERE 
+    oc.country = 'AR'
 
 GROUP BY
     task.id,
@@ -141,5 +154,6 @@ GROUP BY
     clprofile.new,
     oc.urgency,
     assignee_agent_name,
+    clprofile.profile_ptr_id,
     oc."chance_AP",
     oc."chance_TC"

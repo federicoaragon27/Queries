@@ -2,6 +2,7 @@ SELECT
     task.id as task_id,
     booking.id as booking_id,
     oc.id as case_id,
+    sl.stage as stage,
 
    CASE
     	WHEN /*Si la tarea se completo hoy*/
@@ -68,5 +69,5 @@ FROM tasks_task task
         ON bookprofile.user_id = booking_user.id
 
 WHERE
-    (auth_user.username = 'martina' OR auth_user.username = 'estefania' OR auth_user.username = 'flavia') AND
+    (auth_user.username = 'martina' OR auth_user.username = 'estefania') AND
     (task.kind = 'first_contact' OR task.kind = 'retry_first_contact' OR task.kind = 'follow_up' OR task.kind = 'book_visit')

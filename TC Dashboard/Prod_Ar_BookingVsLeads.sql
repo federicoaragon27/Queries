@@ -40,6 +40,8 @@ FROM (SELECT
         		ELSE NULL
     		END) as last_booking_date,
 
+		MAX(bb.id) AS booking_id, 
+
     	CASE
     		WHEN ((tt.kind = 'first_contact') OR (tt.kind = 'retry_first_contact') OR (tt.kind = 'follow_up') OR (tt.kind = 'book_visit')) THEN tt.completed_by_id
         	ELSE NULL
@@ -65,5 +67,13 @@ FROM (SELECT
 		ON lead_table.contacted_by_id = profile_tc.id
 	LEFT JOIN auth_user user_tc
 		ON profile_tc.user_id = user_tc.id
+	LEFT JOIN bookings_booking bb_sec
+		ON bb_sec.id = lead_table.booking_id
+	LEFT JOIN accounts_profile profile_tc_book
+		ON profile_tc_book.id = bb_sec.booked_by_id
+	LEFT JOIN auth_user user_tc_book
+		ON user_tc_book.id = profile_tc_book.user_id
 
-WHERE (user_tc.username = 'estefania' OR user_tc.username = 'martina' OR user_tc.username = 'flavia')
+WHERE
+	(user_tc.username = 'estefania' OR user_tc.username = 'martina') AND
+	(user_tc_book.username = 'estefania' OR user_tc_book.username = 'martina')

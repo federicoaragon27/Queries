@@ -3,6 +3,9 @@ SELECT
     pp.id AS prop_id,
     pp.address AS direccion,
     
+    /*Creación de la propiedad*/
+    table_property_creation.property_creation_date AS prop_creation_date,
+    
         /*Barrio*/
     p_loc.short_name AS barrio,
 
@@ -14,7 +17,22 @@ SELECT
 
     pp.price AS precio_publicacion,
     pp.valuation_price AS precio_valuacion,
-    pp.coordinates as coordenadas,
+    p_rooms.garages AS cocheras,
+    
+    CASE
+        WHEN p_dim.roofed_area IS NULL THEN 0
+        ELSE p_dim.roofed_area
+    END AS area_cubierta,
+
+    CASE
+        WHEN p_dim.semi_roofed_area IS NULL THEN 0
+        ELSE p_dim.semi_roofed_area
+    END AS area_semi_cubierta,
+
+    CASE
+        WHEN p_dim.open_area IS NULL THEN 0
+        ELSE p_dim.open_area
+    END AS area_descubierta,
 
     /*Usuarios de asesores*/
     ac_user.username AS usuario_ac,
@@ -25,25 +43,54 @@ SELECT
     table_buyleads_channel.bl_case_creation AS fecha_buying_lead,
     
     CASE
-        WHEN table_buyleads_channel.origin = 'already_client' THEN 'Cliente antiguo'
+        WHEN table_buyleads_channel.origin = 'already_client' OR THEN 'Cliente antiguo'
         WHEN table_buyleads_channel.origin = 'friend' THEN 'Referido de amigo'
         WHEN table_buyleads_channel.origin = 'Landing' THEN 'Landing'
         WHEN table_buyleads_channel.origin = 'MercadoLibre' THEN 'Mercado Libre'
         WHEN table_buyleads_channel.origin = 'property_post' THEN 'Landing'
         WHEN table_buyleads_channel.origin = 'refered_by_client' THEN 'Referido por cliente'
         WHEN table_buyleads_channel.origin = 'retro' THEN 'Retro'
-        WHEN table_buyleads_channel.origin = 'Smith' THEN 'Smith'
+        WHEN table_buyleads_channel.origin = 'Smith' THEN 'Manualmente en Smith'
         WHEN table_buyleads_channel.origin = 'social_media' THEN 'Redes sociales'
         WHEN table_buyleads_channel.origin = 'Zonaprop' THEN 'Zonaprop'
         WHEN table_buyleads_channel.origin = 'other' THEN 'Otro'
-        ELSE NULL
+        ELSE table_buyleads_channel.origin  
     END AS mkt_source
 
 FROM properties_property pp
 
-    /*Vinculo el asesor comercial y su usuario en Smith*/
+    /*Vinculo locacion*/
     LEFT JOIN properties_location p_loc
         ON p_loc.id = pp.location_id
+
+    /*Vinculo dimensiones*/
+    LEFT JOIN properties_dimensions p_dim
+        ON p_dim.id = pp.dimensions_id
+    
+    /*Vinculo rooms para cocheras*/
+    LEFT JOIN properties_rooms p_rooms
+        ON p_rooms.id = pp.rooms_id
+    
+
+    /*Vinculo el evento de registro para conocer la fecha de creación de la propiedad*/
+    LEFT JOIN (
+        SELECT
+            ee_aux.prop_id as prop_id,
+            MIN(timezone('America/Buenos_Aires', ee_aux.created_at)::date) AS property_creation_date
+
+        FROM events_propertyevent epe
+            
+            LEFT JOIN events_event ee_aux
+                ON ee_aux.id = epe.event_ptr_id
+        
+        WHERE 
+            epe.kind = 'registered' AND
+            ee_aux.prop_id IS NOT NULL
+        
+        GROUP BY ee_aux.prop_id
+        
+    ) AS table_property_creation
+        ON table_property_creation.prop_id = pp.id
     /*Vinculo el asesor comercial y su usuario en Smith*/
     LEFT JOIN accounts_profile ac_profile
         ON ac_profile.id = pp.commercial_agent_id
@@ -87,6 +134,7 @@ FROM properties_property pp
     LEFT JOIN auth_user ap_user
         ON ap_user.id = ap_profile.user_id
 WHERE 
-    pp.country = 'AR' AND
+    p_loc.country = 'AR' AND
     pp.operation_status = 'active' AND
+    pp.development_id IS NULL AND
     pp.price IS NOT NULL

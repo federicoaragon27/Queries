@@ -64,6 +64,11 @@ SELECT
     WHEN (oc."chance_AP" = 'high') THEN 1
     ELSE 0
   END as high_chance_ap,
+
+  CASE
+    WHEN (oc."chance_AP" = 'high') AND (oc."chance_TC" = 'high') THEN 1
+    ELSE 0
+  END as actual_high_chance_tc_ap_coincidence,
     
   CASE
     WHEN (bb.result = 'successful') THEN '1. Visited'
@@ -99,11 +104,14 @@ FROM bookings_booking bb
   LEFT JOIN properties_property pp
     ON pp.id = bb.prop_id 
   LEFT JOIN accounts_profile profile_tc
-    ON profile_tc.id = bb.booked_by_id
+    ON profile_tc.id = bb.booked_by_id  
   LEFT JOIN auth_user user_tc
     ON user_tc.id = profile_tc.user_id
   LEFT JOIN accounts_profile profile_ap
     ON profile_ap.id = bb.performed_by_id
   LEFT JOIN auth_user user_ap
     ON user_ap.id = profile_ap.user_id 
+  
+WHERE
+  (user_tc.username = 'estefania' OR user_tc.username = 'martina') 
   
